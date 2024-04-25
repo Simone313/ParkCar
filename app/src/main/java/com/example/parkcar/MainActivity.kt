@@ -6,18 +6,19 @@
 
 package com.example.parkcar
 
+import android.Manifest
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.location.Location
+import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
-import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import android.Manifest
-import android.location.Location
-import android.os.Build
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.LocationServices
+import android.location.Geocoder
 
 class MainActivity : AppCompatActivity() {
     val PERMISSION_FINE_LOCATION=99;
@@ -48,18 +49,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun saveGPS(){
 
         var fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this)
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener{
-                fun onSuccess(location: Location){
-                    var latTxt= findViewById<TextView>(R.id.latTxt)
-                    var lonText= findViewById<TextView>(R.id.lonTxt)
-                    latTxt.setText(location.latitude.toInt())
-                    lonText.setText(location.longitude.toInt())
-                }
+            var locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+
+
+            var provider = LocationManager.GPS_PROVIDER
+
+            val location: Location? = locationManager.getLastKnownLocation(provider.toString())
+
+
+            if (location != null) {
+
+                var latTxt= findViewById<TextView>(R.id.latTxt)
+                var lonTxt= findViewById<TextView>(R.id.lonTxt)
+                var addTxt= findViewById<TextView>(R.id.addTxt)
+                var latitude= location.latitude
+                var longitude= location.longitude
+                latTxt.text= latitude.toString()
+                lonTxt.text= longitude.toString()
+
+                var geocoder= Geocoder(this)
+                var address= geocoder.getFromLocation(latitude, longitude ,1)?.get(0)?.thoroughfare
+                addTxt.text=address.toString()
+
             }
         }else{
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
