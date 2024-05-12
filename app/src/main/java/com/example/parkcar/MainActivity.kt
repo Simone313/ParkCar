@@ -7,6 +7,7 @@
 package com.example.parkcar
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -29,6 +30,11 @@ class MainActivity : AppCompatActivity() {
         val btn= findViewById<Button>(R.id.locationBtn)
         btn.setOnClickListener {
             saveGPS()
+        }
+
+        val viewAllBtn= findViewById<Button>(R.id.viewAllBtn)
+        viewAllBtn.setOnClickListener {
+            viewAll()
         }
     }
 
@@ -85,6 +91,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    fun viewAll(){
+        val intentBtn= Intent(this, ActivityDB:: class.java)
+        startActivity(intentBtn)
     }
 
 
