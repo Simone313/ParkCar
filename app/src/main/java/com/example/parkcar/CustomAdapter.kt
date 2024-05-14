@@ -33,7 +33,7 @@ class CustomAdapter(val context: Context, val data: ArrayList<Location>): BaseAd
 
         val d= data[position]
         title?.text= d.getAddress()
-        desc?.text= "Latitude: ${d.getLatitude()}, Longitude: ${d.getLongitude()}, Date: ${d.getDate().toString()}"
+        //desc?.text= "Latitude: ${d.getLatitude()}, Longitude: ${d.getLongitude()}, Date: ${d.getDate().toString()}"
 
         return newView!!
     }

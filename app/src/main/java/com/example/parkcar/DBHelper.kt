@@ -8,6 +8,7 @@ import java.util.Date
 class DBHelper (context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DBVERSION){
 
     companion object{
+        private var id=0
         private val DATABASE_NAME="Locations"
         private val DBVERSION =1
         private val TABLENAME="LocationTable"
@@ -23,8 +24,8 @@ class DBHelper (context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null
                         "$COLUMN_ID INTEGER PRIMARY KEY,"+
                         "$COLUMN_LAT DOUBLE,"+
                         "$COLUMN_LON DOUBLE,"+
-                        "$COLUMN_ADD STRING,"+
-                        "$COLUMN_DT DATE)")
+                        "$COLUMN_ADD TEXT,"+
+                        "$COLUMN_DT TEXT)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -32,29 +33,33 @@ class DBHelper (context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null
         onCreate(db)
     }
 
-    fun insertValues(lat: Double, lon: Double, add: String, date: Date){
+    fun insertValues(lat: Double, lon: Double, add: String, date: String){
         val db= this.writableDatabase
         val data= ContentValues()
+        data.put(COLUMN_ID, id)
+        id=id+1
         data.put(COLUMN_LAT, lat)
         data.put(COLUMN_LON, lon)
         data.put(COLUMN_ADD, add)
-        data.put(COLUMN_DT, date.toString())
+        data.put(COLUMN_DT, date)
         db.insert(TABLENAME, null, data)
         db.close()
     }
 
-    fun viewAll(): ArrayList<Location>{
-        val locations= ArrayList<Location>()
+    fun viewAll(): ArrayList<String>{
+        val locations= ArrayList<String>()
         val db= this.readableDatabase
         val cursor= db.rawQuery("SELECT * FROM $TABLENAME", null)
         if(cursor.moveToFirst()){
             do{
-                locations.add(
-                    Location((cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LAT))),
-                        (cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LAT))),
-                        (cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADD))),
-                        (cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DT))))
-                )
+                val ind= (cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADD)))
+                val lat= (cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LAT)))
+//                val dat= (cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DT)))
+                val lon= (cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LAT)))
+
+                var loc= Location(lat, lon, ind)
+
+                locations.add(loc.toString())
             }while(cursor.moveToNext())
         }
         db.close()
