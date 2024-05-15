@@ -20,13 +20,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import android.location.Geocoder
-
+import java.util.Date
 class MainActivity : AppCompatActivity() {
     val PERMISSION_FINE_LOCATION=99;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         val btn= findViewById<Button>(R.id.locationBtn)
         btn.setOnClickListener {
             saveGPS()
@@ -71,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 
 
             if (location != null) {
+                val database= DBHelper(this)
 
                 var latTxt= findViewById<TextView>(R.id.latTxt)
                 var lonTxt= findViewById<TextView>(R.id.lonTxt)
@@ -81,8 +81,14 @@ class MainActivity : AppCompatActivity() {
                 lonTxt.text= longitude.toString()
 
                 var geocoder= Geocoder(this)
-                var address= geocoder.getFromLocation(latitude, longitude ,1)?.get(0)?.thoroughfare
-                addTxt.text=address.toString()
+                var address= (geocoder.getFromLocation(latitude, longitude ,1)?.get(0)?.thoroughfare).toString()
+                addTxt.text=address
+                val dat= Date().toString()
+                val la= latitude.toString()
+                val lo= longitude.toString()
+                database.insertValue(la, lo, address, dat)
+
+                val data=database.viewAll()
 
             }
         }else{

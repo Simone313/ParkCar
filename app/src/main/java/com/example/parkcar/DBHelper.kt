@@ -8,7 +8,6 @@ import java.util.Date
 class DBHelper (context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DBVERSION){
 
     companion object{
-        private var id=0
         private val DATABASE_NAME="Locations"
         private val DBVERSION =1
         private val TABLENAME="LocationTable"
@@ -24,8 +23,8 @@ class DBHelper (context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null
                         "$COLUMN_ID INTEGER PRIMARY KEY,"+
                         "$COLUMN_LAT DOUBLE,"+
                         "$COLUMN_LON DOUBLE,"+
-                        "$COLUMN_ADD TEXT,"+
-                        "$COLUMN_DT TEXT)")
+                        "$COLUMN_ADD STRING ,"+
+                        "$COLUMN_DT STRING)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -33,11 +32,10 @@ class DBHelper (context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null
         onCreate(db)
     }
 
-    fun insertValues(lat: Double, lon: Double, add: String, date: String){
+    fun insertValue(lat: String, lon: String, add: String, date: String){
         val db= this.writableDatabase
         val data= ContentValues()
-        data.put(COLUMN_ID, id)
-        id=id+1
+
         data.put(COLUMN_LAT, lat)
         data.put(COLUMN_LON, lon)
         data.put(COLUMN_ADD, add)
