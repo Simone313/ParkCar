@@ -7,6 +7,7 @@
 package com.example.parkcar
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -21,6 +22,14 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import android.location.Geocoder
 import java.util.Date
+import android.location.LocationListener
+import android.location.LocationRequest
+import android.os.Looper
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
+
+
 class MainActivity : AppCompatActivity() {
     val PERMISSION_FINE_LOCATION=99;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +43,12 @@ class MainActivity : AppCompatActivity() {
         val viewAllBtn= findViewById<Button>(R.id.viewAllBtn)
         viewAllBtn.setOnClickListener {
             viewAll()
+        }
+
+        val mapBtn= findViewById<Button>(R.id.mapBtn)
+
+        mapBtn.setOnClickListener {
+            viewMap()
         }
     }
 
@@ -55,21 +70,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun saveGPS(){
 
         var fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this)
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
-            var locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-
-
-            var provider = LocationManager.GPS_PROVIDER
-
-            val location: Location? = locationManager.getLastKnownLocation(provider.toString())
-
-
-            if (location != null) {
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this){location ->
                 val database= DBHelper(this)
 
                 var latTxt= findViewById<TextView>(R.id.latTxt)
@@ -88,9 +94,8 @@ class MainActivity : AppCompatActivity() {
                 val lo= longitude.toString()
                 database.insertValue(la, lo, address, dat)
 
-                val data=database.viewAll()
-
             }
+
         }else{
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
                 requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_FINE_LOCATION)
@@ -104,5 +109,14 @@ class MainActivity : AppCompatActivity() {
         startActivity(intentBtn)
     }
 
+    fun viewMap(){
+        val intent= Intent(this, MapsActivity:: class.java)
+        startActivity(intent)
+    }
+
 
 }
+
+
+
+
