@@ -53,7 +53,7 @@ class DBHelper (context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null
                 val ind= (cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADD)))
                 val lat= (cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LAT)))
 //                val dat= (cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DT)))
-                val lon= (cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LAT)))
+                val lon= (cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LON)))
 
                 var loc= Location(lat, lon, ind)
 

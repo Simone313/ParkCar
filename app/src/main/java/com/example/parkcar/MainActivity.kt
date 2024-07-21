@@ -32,6 +32,8 @@ import com.google.android.gms.tasks.Task
 
 class MainActivity : AppCompatActivity() {
     val PERMISSION_FINE_LOCATION=99;
+    var latitude=0.0
+    var longitude=0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -81,8 +83,8 @@ class MainActivity : AppCompatActivity() {
                 var latTxt= findViewById<TextView>(R.id.latTxt)
                 var lonTxt= findViewById<TextView>(R.id.lonTxt)
                 var addTxt= findViewById<TextView>(R.id.addTxt)
-                var latitude= location.latitude
-                var longitude= location.longitude
+                latitude= location.latitude
+                longitude= location.longitude
                 latTxt.text= latitude.toString()
                 lonTxt.text= longitude.toString()
 
@@ -111,6 +113,8 @@ class MainActivity : AppCompatActivity() {
 
     fun viewMap(){
         val intent= Intent(this, MapsActivity:: class.java)
+        intent.putExtra("Latitude", latitude)
+        intent.putExtra("Longitude", longitude)
         startActivity(intent)
     }
 
