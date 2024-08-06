@@ -41,6 +41,25 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val latTxt= findViewById<TextView>(R.id.txt1)
+        val lonTxt= findViewById<TextView>(R.id.txt2)
+        val addTxt= findViewById<TextView>(R.id.txt3)
+        val save= findViewById<Button>(R.id.locationBtn)
+        val sh= findViewById<Button>(R.id.shareBtn)
+        val view= findViewById<Button>(R.id.viewAllBtn)
+        val map= findViewById<Button>(R.id.mapBtn)
+
+        latTxt.setText(R.string.lat)
+        lonTxt.setText(R.string.lon)
+        addTxt.setText(R.string.add)
+        save.setText(R.string.save)
+        sh.setText(R.string.share)
+        view.setText(R.string.view)
+        map.setText(R.string.map)
+
+
+
         val btn= findViewById<Button>(R.id.locationBtn)
         btn.setOnClickListener {
             saveGPS()
