@@ -8,6 +8,8 @@ package com.example.parkcar
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -25,15 +27,17 @@ import java.util.Date
 import android.location.LocationListener
 import android.location.LocationRequest
 import android.os.Looper
+import androidx.activity.result.ActivityResult
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
-
+import androidx.activity.result.contract.ActivityResultContracts
 
 class MainActivity : AppCompatActivity() {
     val PERMISSION_FINE_LOCATION=99;
     var latitude=0.0
     var longitude=0.0
+    var address=" "
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,6 +55,11 @@ class MainActivity : AppCompatActivity() {
 
         mapBtn.setOnClickListener {
             viewMap()
+        }
+
+        val share= findViewById<Button>(R.id.shareBtn)
+        share.setOnClickListener {
+            shareLoc()
         }
     }
 
@@ -89,7 +98,8 @@ class MainActivity : AppCompatActivity() {
                 lonTxt.text= longitude.toString()
 
                 var geocoder= Geocoder(this)
-                var address= (geocoder.getFromLocation(latitude, longitude ,1)?.get(0)?.thoroughfare).toString()
+                address= (geocoder.getFromLocation(latitude, longitude ,1)?.get(0)?.thoroughfare).toString()
+                address=address.replace(' ','_')
                 addTxt.text=address
                 val dat= Date().toString()
                 val la= latitude.toString()
@@ -107,15 +117,71 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun viewAll(){
-        val intentBtn= Intent(this, ActivityDB:: class.java)
-        startActivity(intentBtn)
+
+
+
+       /* val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+
+            }
+
+
+        }*/
+
+        val intent= Intent(this, ActivityDB:: class.java)
+        startActivityForResult(intent,0)
+
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        var a:Double?=null
+        var o:Double?=null
+        if(requestCode==0){
+            if(resultCode==Activity.RESULT_OK){
+                if (data != null) {
+                    a= data.getStringExtra("Latitude")?.toDouble()
+                }
+                if (data != null) {
+                    o= data.getStringExtra("Longitude")?.toDouble()
+                }
+                var geocoder= Geocoder(this)
+                address= (a?.let { o?.let { it1 -> geocoder.getFromLocation(it, it1,1)?.get(0)?.thoroughfare } }).toString()
+                if (a != null && o!=null) {
+                    latitude=a
+                    longitude=o
+                }
+
+                findViewById<TextView>(R.id.latTxt).setText(latitude.toString())
+                findViewById<TextView>(R.id.lonTxt).setText(longitude.toString())
+                findViewById<TextView>(R.id.addTxt).setText(address)
+            }
+        }
     }
 
     fun viewMap(){
         val intent= Intent(this, MapsActivity:: class.java)
         intent.putExtra("Latitude", latitude)
         intent.putExtra("Longitude", longitude)
+        intent.putExtra("Address", address)
         startActivity(intent)
+    }
+
+    fun shareLoc(){
+        if(latitude==0.0 && longitude==0.0){
+            Toast.makeText(this, "ERROR: no locations saved", Toast.LENGTH_SHORT).show()
+        }else{
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, latitude.toString() +" "+longitude.toString())
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
+
     }
 
 

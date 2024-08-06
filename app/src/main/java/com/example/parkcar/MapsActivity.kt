@@ -3,6 +3,7 @@ package com.example.parkcar
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -43,8 +44,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         intent = getIntent()
         var lat= intent.getDoubleExtra("Latitude",0.0)
         var lon= intent.getDoubleExtra("Longitude",0.0)
+        var add= intent.getStringExtra("Address")
         val pos = LatLng(lat, lon)
         mMap.addMarker(MarkerOptions().position(pos).title("Marker"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
+        // creo l'oggetto LatLing
+        val latlng= LatLng(lat,lon)
+        //metodo per far si che la camera faccia uno zoom sulla posizione
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 18.0f))
+
+        mMap.setOnMarkerClickListener {marker->
+            Toast.makeText(this, add, Toast.LENGTH_SHORT).show()
+            true
+        }
+
     }
+
+
 }

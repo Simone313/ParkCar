@@ -1,5 +1,6 @@
 package com.example.parkcar
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -28,18 +29,15 @@ class ActivityDB : AppCompatActivity() {
             val index = position
             println("indice"+index)
             val str= data.get(index).split(" ")
-            val lat= str.get(3)
-            val lon= str.get(6)
+            val lat= str.get(2)
+            val lon= str.get(5)
 
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, lat+" "+lon)
-                type = "text/plain"
-            }
+            intent = getIntent()
+            intent.putExtra("Latitude", lat.toString())
+            intent.putExtra("Longitude", lon.toString())
 
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
-
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
     }
 
