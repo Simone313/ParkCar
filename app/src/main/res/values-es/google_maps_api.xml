@@ -1,0 +1,7 @@
+<resources>
+    <!--
+    Substitute your own Google Maps API key here.
+    To use Google Maps on Android, you need to get an API key from the Google Developers Console.
+    -->
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyBtKpz4koi0AqzyBQpSs5b_zxqy3d8-WX4</string>
+</resources>

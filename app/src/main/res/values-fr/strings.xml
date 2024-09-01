@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ParkCar</string>
+    <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="lat">Latitude</string>
+    <string name="lon">Longitude</string>
+    <string name="add">Adresse</string>
+    <string name="save">Enregistrer Position</string>
+    <string name="share">Partager</string>
+    <string name="view">Voir Tous</string>
+    <string name="map">Voir Carte</string>
+</resources>
