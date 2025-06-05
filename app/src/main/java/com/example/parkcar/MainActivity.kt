@@ -106,24 +106,29 @@ class MainActivity : AppCompatActivity() {
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this){location ->
-                val database= DBHelper(this)
+                if(location!=null){
+                    val database= DBHelper(this)
 
-                var latTxt= findViewById<TextView>(R.id.latTxt)
-                var lonTxt= findViewById<TextView>(R.id.lonTxt)
-                var addTxt= findViewById<TextView>(R.id.addTxt)
-                latitude= location.latitude
-                longitude= location.longitude
-                latTxt.text= latitude.toString()
-                lonTxt.text= longitude.toString()
+                    var latTxt= findViewById<TextView>(R.id.latTxt)
+                    var lonTxt= findViewById<TextView>(R.id.lonTxt)
+                    var addTxt= findViewById<TextView>(R.id.addTxt)
+                    latitude= location.latitude
+                    longitude= location.longitude
+                    latTxt.text= latitude.toString()
+                    lonTxt.text= longitude.toString()
 
-                var geocoder= Geocoder(this)
-                address= (geocoder.getFromLocation(latitude, longitude ,1)?.get(0)?.thoroughfare).toString()
-                address=address.replace(' ','_')
-                addTxt.text=address
-                val dat= Date().toString()
-                val la= latitude.toString()
-                val lo= longitude.toString()
-                database.insertValue(la, lo, address, dat)
+                    var geocoder= Geocoder(this)
+                    address= (geocoder.getFromLocation(latitude, longitude ,1)?.get(0)?.thoroughfare).toString()
+                    address=address.replace(' ','_')
+                    addTxt.text=address
+                    val dat= Date().toString()
+                    val la= latitude.toString()
+                    val lo= longitude.toString()
+                    database.insertValue(la, lo, address, dat)
+                }else{
+                    Toast.makeText(this, "Location not available, please try again later", Toast.LENGTH_LONG).show()
+                }
+
 
             }
 
